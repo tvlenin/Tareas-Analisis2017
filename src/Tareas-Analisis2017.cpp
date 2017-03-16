@@ -95,18 +95,88 @@ float rtnewt (void (*funcd)(float, float *, float *), float x1, float x2,float x
 
 
 
-//template <class P, class P1>
-//P1 interpolacion (P Fx, P1 Xi, P1 Xu){
-template <class F, class T>
-T n_r(F func, T x1, T x2, T xacc){
-	T err=1;
-	T ans=0;
-	while(err>xacc){
 
+
+#include "nrutil.h"
+#define ITMAX 100 //Maximum allowed number of iterations.
+#define EPS 3.0e-8 //Machine floating-point precision.
+
+template<class F, class T>
+T brent(F func, T x1, T x2, T tol){
+	int iter;
+	T a=x1,b=x2,c=x2,d,e,min1,min2;
+	T fa=func(a);
+	T fb=func(b);
+	T fc,p,q,r,s,tol1,xm;
+	if ((fa > 0.0 && fb > 0.0) || (fa < 0.0 && fb < 0.0))
+		cout<<"Root must be bracketed in zbrent\n";
+		//nrerror("Root must be bracketed in zbrent");
+	fc=fb;
+	for(iter=1;iter<=ITMAX;iter++){
+		if ((fb > 0.0 && fc > 0.0) || (fb < 0.0 && fc < 0.0)) {
+			c=a; //Rename a, b, c and adjust bounding interval
+			fc=fa; //d.
+			e=d=b-a;
+		}if (fabs(fc) < fabs(fb)) {
+			a=b;
+			b=c;
+			c=a;
+			fa=fb;
+			fb=fc;
+			fc=fa;
+		}
+		tol1=2.0*EPS*fabs(b)+0.5*tol; //Convergence check.
+		xm=0.5*(c-b);
+		if (fabs(xm) <= tol1 || fb == 0.0)
+			return b;
+		if (fabs(e) >= tol1 && fabs(fa) > fabs(fb)) {
+			s=fb/fa; //Attempt inverse quadratic interpolation.
+			if (a == c) {
+				p=2.0*xm*s;
+				q=1.0-s;
+			} else {
+				q=fa/fc;
+				r=fb/fc;
+				p=s*(2.0*xm*q*(q-r)-(b-a)*(r-1.0));
+				q=(q-1.0)*(r-1.0)*(s-1.0);
+			}
+			if (p > 0.0) q = -q; //Check whether in bounds.
+				p=fabs(p);
+			min1=3.0*xm*q-fabs(tol1*q);
+			min2=fabs(e*q);
+			if (2.0*p < (min1 < min2 ? min1 : min2)) {
+				e=d; //Accept interpolation.
+				d=p/q;
+			} else {
+				d=xm; //Interpolation failed, use bisection.
+				e=d;
+			}
+		}else {// Bounds decreasing too slowly, use bisection.
+			d=xm;
+			e=d;
+		}
+		a=b; //Move last best guess to a.
+		fa=fb;
+		if (fabs(d) > tol1) //Evaluate new trial root.
+				b += d;
+		else
+			b += SIGN(tol1,xm);
+		fb=fb=func(b);
+	}
+	cout<<"Maximum number of iterations exceeded in zbrent\n";
+	//nrerror("Maximum number of iterations exceeded in zbrent");
+	return 0.0; //Never get here.
+}
+
+template <class F, class T>
+T n_r(F func, T x1, T xacc){
+	T ans=0;
+	while(ans>xacc){
+		x1=x1-(func(x1)/func(1,x1));
+		ans=func(x1);
 	}
 	return ans;
 }
-
 
 int main() {
 
@@ -120,12 +190,11 @@ int main() {
 	};
 
 	Square s1;
-	s1(2);
-	double x1 = -1;
-	double x2 = 2;
-	double err = 0.01;
 
-	double ans = n_r(2.0, x1, x2, err);
+	double x1 = -1.0;
+	double x2 = 4.0;
+	double err = 0.01;
+	double ans = interpolacion(s1, x1, x2);
 	cout<<"Respuesta: "<<ans<<" ."<<endl;
 	return 0;
 }
