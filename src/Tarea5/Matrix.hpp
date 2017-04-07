@@ -3,14 +3,17 @@
 
 #include <cstddef>
 #include <cstring>
+#include <vector>
 
 namespace anpi
 {
+
   /**
    * Row-major simple matrix class
    */
   template<typename T>
   class Matrix {
+
   private:
     /// All matrix data
     T* _data;
@@ -61,14 +64,19 @@ namespace anpi
     const T* operator[](const size_t row) const {return _data + row*_cols;}
 
     /// Return reference to the element at the r row and c column
-    T& operator()(const size_t row,const size_t col) {
-      return *(_data + (row*_cols + col));
-    }
+        T& operator()(const size_t row,const size_t col) {
+          return *(_data + (row*_cols + col));
+        }
 
-    /// Return const reference to the element at the r row and c column
-    const T& operator()(const size_t row,const size_t col) const {
-      return *(_data + (row*_cols + col));
-    }
+	/// Return const reference to the element at the r row and c column
+		const T& operator()(const size_t row,const size_t col) const {
+		  return *(_data + (row*_cols + col));
+		}
+
+    /**
+     * Return the adition of this matrix and another of the same size
+     */
+    Matrix<T>& operator+(Matrix<T>& B);
 
     /**
      * Allocate memory for the given number of rows and cols
@@ -109,6 +117,12 @@ namespace anpi
     inline const T* data() const { return _data; }
     
   }; // class Matrix
+
+
+  struct WrongSize:std::exception {
+    const char* what() const noexcept {return "Different size of matrix, addition cancelled\n";}
+  };
+
 
   // --------------
   // Implementation
@@ -160,6 +174,21 @@ namespace anpi
     allocate(other._rows,other._cols);
     fill(other.data());
     return *this;
+  }
+
+  template<typename T>
+  Matrix<T>& Matrix<T>::operator+(Matrix<T>& B){
+	  if(this->_cols!=(&B)->cols() && this->rows()!=(&B)->rows()){
+		  throw WrongSize();
+	  }else {
+		  Matrix<double>*ans = new Matrix<double>(*this);
+		  for(unsigned int i=0;i<this->rows();i++){
+			  for(unsigned int j=0;j<this->cols();j++){
+				  (*ans)(i,j)=((*this)(i,j))+((&B)->operator ()(i,j));
+			  }
+		  }
+		  return *ans;
+	  }
   }
 
   template<typename T>
