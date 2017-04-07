@@ -131,6 +131,11 @@ namespace anpi
      */
     inline const T* data() const { return _data; }
     
+    /**
+     * Calculates the transposed matrix and returns it
+     */
+    Matrix<T>& transposed();
+
   }; // class Matrix
 
 
@@ -273,6 +278,19 @@ namespace anpi
   template<typename T>
   void Matrix<T>::fill(const T* mem) {
     std::memcpy(_data,mem,sizeof(T)*_rows*_cols);
+  }
+
+  template<typename T>
+  Matrix<T>& Matrix<T>::transposed(){
+	  Matrix<T>* ans = new Matrix<T>((*this));
+	  T tmp,tmp2;
+	  for(unsigned int y=0; y<_rows; y++){
+		  for(unsigned int x=y+1; x<_cols; x++){
+			  (*ans)(x,y)=(*this)(y,x);
+			  (*ans)(y,x)=(*this)(x,y);
+		  }
+	  }
+	  return *ans;
   }
 
 } // namespace ANPI
