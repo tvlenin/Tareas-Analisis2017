@@ -283,7 +283,6 @@ namespace anpi
   template<typename T>
   Matrix<T>& Matrix<T>::transposed(){
 	  Matrix<T>* ans = new Matrix<T>((*this));
-	  T tmp,tmp2;
 	  for(unsigned int y=0; y<_rows; y++){
 		  for(unsigned int x=y+1; x<_cols; x++){
 			  (*ans)(x,y)=(*this)(y,x);
