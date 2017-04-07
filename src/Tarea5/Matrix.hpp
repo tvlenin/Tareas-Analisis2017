@@ -74,9 +74,19 @@ namespace anpi
 		}
 
     /**
-     * Return the adition of this matrix and another of the same size
+     * Returns the adition of this matrix and another of the same size
      */
     Matrix<T>& operator+(Matrix<T>& B);
+
+    /**
+	 * Returns the subtraction of this matrix and another of the same size
+	 */
+	Matrix<T>& operator-(Matrix<T>& B);
+
+    /**
+     * Returns the multiplication of two matrix
+     */
+    Matrix<T>& operator*(Matrix<T>&B);
 
     /**
      * Allocate memory for the given number of rows and cols
@@ -120,7 +130,7 @@ namespace anpi
 
 
   struct WrongSize:std::exception {
-    const char* what() const noexcept {return "Different size of matrix, addition cancelled\n";}
+    const char* what() const noexcept {return "Different size of matrix, operation cancelled\n";}
   };
 
 
@@ -181,15 +191,50 @@ namespace anpi
 	  if(this->_cols!=(&B)->cols() && this->rows()!=(&B)->rows()){
 		  throw WrongSize();
 	  }else {
-		  Matrix<double>*ans = new Matrix<double>(*this);
+		  Matrix<T>*ans = new Matrix<T>(this->_rows, this->_cols, 0.0);
 		  for(unsigned int i=0;i<this->rows();i++){
 			  for(unsigned int j=0;j<this->cols();j++){
-				  (*ans)(i,j)=((*this)(i,j))+((&B)->operator ()(i,j));
+				  (*ans)(i,j)=((*this)(i,j))+(B(i,j));
 			  }
 		  }
 		  return *ans;
 	  }
   }
+
+  template<typename T>
+    Matrix<T>& Matrix<T>::operator-(Matrix<T>& B){
+  	  if(this->_cols!=(&B)->cols() && this->rows()!=(&B)->rows()){
+  		  throw WrongSize();
+  	  }else {
+  		  Matrix<T>*ans = new Matrix<T>(this->_rows, this->_cols, 0.0);
+  		  for(unsigned int i=0;i<this->rows();i++){
+  			  for(unsigned int j=0;j<this->cols();j++){
+  				  (*ans)(i,j)=((*this)(i,j))-(B(i,j));
+  			  }
+  		  }
+  		  return *ans;
+  	  }
+    }
+
+  template<typename T>
+  Matrix<T>& Matrix<T>::operator *(Matrix<T>& B){
+	  if(this->rows()!=(&B)->cols()){
+		throw WrongSize();
+	  }else {
+			T tmp;
+			Matrix<T>* ans = new Matrix<T>(this->cols(),(B).rows(),0.0);
+			for(unsigned int a=0; a<rows();a++){
+				for(unsigned int b=0; b<B.cols(); b++){
+					for(unsigned int c=0; c<rows();c++){
+						tmp += (*this)(a,c)*(B(c,b));
+					}
+					(*ans)(a,b)=tmp;
+					tmp=0;
+				}
+			}
+			return *ans;
+		}
+	}
 
   template<typename T>
   void Matrix<T>::allocate(const size_t r,
