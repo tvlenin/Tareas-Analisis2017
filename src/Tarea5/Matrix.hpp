@@ -43,6 +43,11 @@ namespace anpi
 	   const T *const initMem);
 
     /**
+     * COnstruct a square identity matrix
+     */
+    Matrix(const size_t size);
+
+    /**
      * Copy constructor will do a deep copy on the given matrix
      */
     Matrix(const Matrix<T>& other);
@@ -163,6 +168,18 @@ namespace anpi
     fill(initMem);
   }
   
+
+  template<typename T>
+  Matrix<T>::Matrix(const size_t size){
+	 // : _data(0),_rows(0),_cols(0)  {
+	  _rows = size;
+	  _cols = size;
+	  allocate(size,size);
+	  fill(0.0);
+	  for(unsigned int i=0; i<_rows; i++){
+		  (*this)(i,i)=1;
+	  }
+  }
 
   template<typename T>
   Matrix<T>::Matrix(const Matrix<T>& other)
