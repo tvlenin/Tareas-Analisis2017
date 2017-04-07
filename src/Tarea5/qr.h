@@ -19,7 +19,8 @@ namespace anpi{
     T getNorm(const vector<T>, T norm){}
     //Return the identity matrix sizec x sizec
     Matrix<T> IMatrix(int sizec){}
-
+    //get de diferent qmatrix and put this on qMatrix vector
+    void getQMatrix(Matrix<T> IMatrix, vector<T> u){}
 
 
     qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
