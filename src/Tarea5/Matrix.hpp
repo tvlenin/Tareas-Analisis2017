@@ -43,6 +43,11 @@ namespace anpi
 	   const T *const initMem);
 
     /**
+     * COnstruct a square identity matrix
+     */
+    Matrix(const size_t size);
+
+    /**
      * Copy constructor will do a deep copy on the given matrix
      */
     Matrix(const Matrix<T>& other);
@@ -126,6 +131,11 @@ namespace anpi
      */
     inline const T* data() const { return _data; }
     
+    /**
+     * Calculates the transposed matrix and returns it
+     */
+    Matrix<T>& transposed();
+
   }; // class Matrix
 
 
@@ -163,6 +173,18 @@ namespace anpi
     fill(initMem);
   }
   
+
+  template<typename T>
+  Matrix<T>::Matrix(const size_t size){
+	 // : _data(0),_rows(0),_cols(0)  {
+	  _rows = size;
+	  _cols = size;
+	  allocate(size,size);
+	  fill(0.0);
+	  for(unsigned int i=0; i<_rows; i++){
+		  (*this)(i,i)=1;
+	  }
+  }
 
   template<typename T>
   Matrix<T>::Matrix(const Matrix<T>& other)
@@ -256,6 +278,18 @@ namespace anpi
   template<typename T>
   void Matrix<T>::fill(const T* mem) {
     std::memcpy(_data,mem,sizeof(T)*_rows*_cols);
+  }
+
+  template<typename T>
+  Matrix<T>& Matrix<T>::transposed(){
+	  Matrix<T>* ans = new Matrix<T>((*this));
+	  for(unsigned int y=0; y<_rows; y++){
+		  for(unsigned int x=y+1; x<_cols; x++){
+			  (*ans)(x,y)=(*this)(y,x);
+			  (*ans)(y,x)=(*this)(x,y);
+		  }
+	  }
+	  return *ans;
   }
 
 } // namespace ANPI
