@@ -4,6 +4,10 @@
 #include <cstddef>
 #include <cstring>
 #include <vector>
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
 
 namespace anpi
 {
@@ -69,14 +73,14 @@ namespace anpi
     const T* operator[](const size_t row) const {return _data + row*_cols;}
 
     /// Return reference to the element at the r row and c column
-        T& operator()(const size_t row,const size_t col) {
-          return *(_data + (row*_cols + col));
-        }
+	T& operator()(const size_t row,const size_t col) {
+	  return *(_data + (row*_cols + col));
+	}
 
 	/// Return const reference to the element at the r row and c column
-		const T& operator()(const size_t row,const size_t col) const {
-		  return *(_data + (row*_cols + col));
-		}
+	const T& operator()(const size_t row,const size_t col) const {
+	  return *(_data + (row*_cols + col));
+	}
 
     /**
      * Returns the adition of this matrix and another of the same size
@@ -136,6 +140,12 @@ namespace anpi
      */
     Matrix<T>& transposed();
 
+    /**
+     * Prints the matrix content
+     */
+    void showMatrix();
+
+    void initializeMatrix(T* refMatrix, int size);
   }; // class Matrix
 
 
@@ -287,11 +297,30 @@ namespace anpi
 		  for(unsigned int x=y+1; x<_cols; x++){
 			  (*ans)(x,y)=(*this)(y,x);
 			  (*ans)(y,x)=(*this)(x,y);
+
 		  }
 	  }
 	  return *ans;
   }
 
+  template<typename T>
+  void Matrix<T>::showMatrix(){
+	  for(unsigned int y=0; y<_rows; y++){
+		  for(unsigned int x=0; x<_cols; x++){
+			  cout<<setw(14)<<(*this)(x,y);
+		  }
+		  cout<<endl;
+	  }
+  }
+
+  template<typename T>
+  void Matrix<T>::initializeMatrix(T* refMatrix, int size){
+	  for(int i=0; i<size;i++){
+		  for(int j=0; j<size; j++){
+			  (*this)(i,j) = refMatrix[i*size+j];
+		  }
+	  }
+  }
 } // namespace ANPI
 
 
