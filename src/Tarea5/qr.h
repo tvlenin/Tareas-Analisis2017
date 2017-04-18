@@ -76,7 +76,7 @@ namespace anpi{
     qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
 		(R) = (A);
 		int matrixSize = A.cols();
-		//Matrix<double>*qTemp = new Matrix<double>(matrixSize,matrixSize,0.0);
+		
 		//Matrix<double>*rTemp = new Matrix<double>(matrixSize,matrixSize,0.0);
 
 		
@@ -86,6 +86,17 @@ namespace anpi{
 				Q = qMatrix[0];
 				R = Q * R;
 			}
+			else{
+				Matrix<double>*qTemp = new Matrix<double>(matrixSize-i,matrixSize-i,0.0);
+				Matrix<double>*rTemp = new Matrix<double>(matrixSize-i,matrixSize-i,0.0);
+				(*rTemp) = R.subMatrix(i);
+				getQMatrix(getU((*rTemp).getColumn(0)),(*rTemp).getColumn(0));
+				(*qTemp) = qMatrix[i];
+				(*rTemp) = (*qTemp) * (*rTemp);
+				
+				cout<<qTemp->rows()<<endl;
+				
+			}	
 							
 				
 		}
