@@ -118,7 +118,7 @@ namespace anpi
     /*
      * To scale the matrix with an scalar
      */
-    void scale(const T* scal);
+    void scale(const T scal);
 
     /**
      * Number of rows
@@ -301,7 +301,7 @@ namespace anpi
   }
 
   template<typename T>
-  void Matrix<T>::scale(const T* scal){
+  void Matrix<T>::scale(const T scal){
 	  T* end = _data + (_rows*_cols);
 	  for (T* ptr = _data;ptr!=end;++ptr) {
 		*ptr = (*ptr)*scal;
