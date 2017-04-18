@@ -48,13 +48,9 @@ namespace anpi{
 		Matrix<T> *Q = new Matrix<T>((*I)-(*UU));
 		
 		qMatrix.push_back(*Q);
-		
-		
-		//(*Q) = (I)- UU;
-		
-		
 	}
 	
+	//return u*u transposed
 	Matrix<T> mulTrans(vector<T> vectU ){
 		int vectSize = vectU.size();
 		
@@ -66,13 +62,11 @@ namespace anpi{
 		}
 		return *U;
 	}
-	
-	void result (){
-		//getQMatrix(getU(A.getColumn(0)),A.getColumn(0));
-		
-			
-	}
 
+	void result (){
+		//getQMatrix(getU(A.getColumn(0)),A.getColumn(0));			
+	}
+	//obtain Q and R Matrix
     qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
 		(R) = (A);
 		int matrixSize = A.cols();
@@ -93,17 +87,25 @@ namespace anpi{
 				getQMatrix(getU((*rTemp).getColumn(0)),(*rTemp).getColumn(0));
 				(*qTemp) = qMatrix[i];
 				(*rTemp) = (*qTemp) * (*rTemp);
-				
-				cout<<qTemp->rows()<<endl;
-				
+				R.substitude((*rTemp));
+			
 			}	
 							
 				
 		}
+		for (int i = 0; i < matrixSize; i++ ){
+			if (i == 0){
+				Q = qMatrix[0].transposed();
+			}
+			else{			
+				Matrix<double>*Itemp = new Matrix<double>(matrixSize);
+				(*Itemp).substitude(qMatrix[i]);
+				Q = Q * ((*Itemp).transposed()) ;		
+			}
+		}
 					
 	}
 	
-
   };
 }// namespace ANPI
 

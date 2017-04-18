@@ -132,6 +132,13 @@ namespace anpi
 	 */
 	Matrix<T>& upMatrix(unsigned const int degree);
 
+	/*
+	 *Place a give matrix A over this one, with the right down corner in common
+	 *A must be smaller than the base.
+	 *Only works with both square matrix
+	 */
+	void substitude(Matrix<T>& newM);
+
 
     /**
      * Number of rows
@@ -353,6 +360,19 @@ namespace anpi
 	  }
   }
 
+  template<typename T>
+  void Matrix<T>::substitude(Matrix<T>& newM){
+	if((newM.rows()!=newM.cols() || this->rows()!=this->cols()) && newM.rows()<=this->rows()){
+		throw WrongSize();
+	}else{
+		unsigned int diff=this->rows()-newM.rows();
+		for(unsigned int i=diff; i<this->rows(); i++){
+			for(unsigned int j=diff; j<this->cols(); j++){
+				(*this)(i,j)=newM(i-diff,j-diff);
+			}
+		}
+	}
+  }
 
   template<typename T>
   Matrix<T>& Matrix<T>::transposed(){
