@@ -55,6 +55,13 @@ namespace anpi{
 		}
 	};
 
+	struct ErrSize:std::exception {
+			const char* what() const noexcept {
+				return "**ANPI: Matrix is not valid. Col and Row number are not equal **\n";
+			}
+		};
+
+
 
 	template<typename T>
 	void TestFramework<T>::lu(const Matrix<T>* A, Matrix<T>* LU){
@@ -96,44 +103,70 @@ namespace anpi{
 	template<typename T>
 	bool TestFramework<T>::solveLU(const Matrix<T>* A, vector<T> x, std::vector<T> b){
 		int d = A->cols();
-		Matrix<double>* LU = new Matrix<double>(d,d,1);	//LU Matrix, initialize with 1.
+		int d2 = A->rows();
+		try{
+			if(d==d2){
+				Matrix<double>* LU = new Matrix<double>(d,d,1);	//LU Matrix, initialize with 1.
 
-		lu(A,LU); //Calculte the LU Matrix
+				lu(A,LU); //Calculte the LU Matrix
 
-		std::vector<T> y(d);
-		for(int i=0; i<d; ++i){
-			T sum=0.;
-			for(int k=0; k<i; ++k){
-				sum+=((*LU)(k,i))*y[k];
+				std::vector<T> y(d);
+				for(int i=0; i<d; ++i){
+					T sum=0.;
+					for(int k=0; k<i; ++k){
+						sum+=((*LU)(k,i))*y[k];
+					}
+
+					y[i]=(b[i]-sum)/((*LU)(i,i));
+				}
+				for(int i=d-1; i>=0; --i){
+					T sum=0.;
+					for(int k=i+1; k<d; ++k)
+						sum+=((*LU)(k,i))*x[k];
+					x[i]=(y[i]-sum);
+				}
+
+				showVector(x);
+				return true;
 			}
-
-			y[i]=(b[i]-sum)/((*LU)(i,i));
+			else{
+				throw ErrSize();
+			}
 		}
-		for(int i=d-1; i>=0; --i){
-			T sum=0.;
-			for(int k=i+1; k<d; ++k)
-				sum+=((*LU)(k,i))*x[k];
-			x[i]=(y[i]-sum);
+		catch(exception& err){
+			cout << err.what() << endl;
+			exit(0);
 		}
-
-		showVector(x);
-		return true;
 	}
 
 	template<typename T>
 	void TestFramework<T>::invertLU(Matrix<T>* A, Matrix<T>* Ai){
 		int N = A->cols();
+		int N2 = A->rows();
+		try{
+			if(N==N2){
+				std::vector<T> tempCol(N);
+				std::vector<T> tempRow(N);
 
-		std::vector<T> tempCol(N);
-		std::vector<T> tempRow(N);
+				cout<<"INVERTED MATRIX: ";
+				for(int j=0; j<N; j++){
+					for(int i = 0; i<N; i++)
+						tempCol[i]=0.;
 
-		for(int j=0; j<N; j++){
-			for(int i = 0; i<N; i++)
-				tempCol[i]=0.;
+					tempCol[j]=1.0;
 
-			tempCol[j]=1.0;
-			solveLU(A,tempRow,tempCol);
-			showVector(tempRow);
+					solveLU(A,tempRow,tempCol);
+					//showVector(tempRow);
+				}
+			}
+			else{
+				throw ErrSize();
+			}
+
+		}
+		catch(exception& err){
+			cout << err.what() << endl;
+			exit(0);
 		}
 	}
 }

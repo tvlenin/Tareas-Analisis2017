@@ -21,16 +21,35 @@ class TestList {
 		void showLU_InvertTests(){
 			TestFramework<double>* test = new TestFramework<double>();
 			Matrix<double>* A = new Matrix<double>(3,3,1);
+			Matrix<double>* B = new Matrix<double>(3,4,1);
 			Matrix<double>* Ai = new Matrix<double>(3,3,1);
+			Matrix<double>* Bi = new Matrix<double>(3,4,1);
 
 
-			double Avals[9]={1.,-1.,0.,
-							 0.,1.,0.,
-							 2.,0.,1.};
+			double Avals[9]={3.,3.,0.,
+							 -3.,3.,0.,
+							 0.,0.,-1.5};
 
-			A->initializeMatrix(Avals,3);
+			double Bvals[12]={3.,3.,0.,-4.,
+							 -3.,3.,0.,1.,
+							 0.,0.,-1.5,-2.};
 
+			A->initializeMatrix(Avals,3,3);
+			B->initializeMatrix(Bvals,3,4);
+
+			cout<<"TEST 1"<<endl;
+			cout<<"###################################"<<endl;
+			cout<<"INVERT MATRIX A"<<endl;
+			cout<<"MATRIX A:"<<endl;
+			A->showMatrix();
 			test->invertLU(A,Ai);
+			cout<<"###################################"<<endl;
+			cout<<"TEST 2"<<endl;
+			cout<<"###################################"<<endl;
+			cout<<"NOT SQUARE MATRIX"<<endl;
+			B->showMatrix();
+			cout<<"MATRIX B:"<<endl;
+			test->invertLU(B,Bi);
 
 		}
 
@@ -78,7 +97,7 @@ class TestList {
 
 			cout<<"TEST 1"<<endl;
 			cout<<"###################################"<<endl;
-			A->initializeMatrix(Avals,3);
+			A->initializeMatrix(Avals,3,3);
 			cout<<"SOLVING Ax=b"<<endl;
 			cout<<"MATRIX A:"<<endl;
 			A->showMatrix();
@@ -96,7 +115,7 @@ class TestList {
 			cout<<"###################################"<<endl;
 			cout<<"TEST 2"<<endl;
 			cout<<"###################################"<<endl;
-			B->initializeMatrix(Bvals,3);
+			B->initializeMatrix(Bvals,3,3);
 			cout<<"SOLVING Bx=b"<<endl;
 			cout<<"MATRIX B:"<<endl;
 			B->showMatrix();
@@ -114,7 +133,7 @@ class TestList {
 			cout<<"###################################"<<endl;
 			cout<<"TEST 3"<<endl;
 			cout<<"###################################"<<endl;
-			C->initializeMatrix(Cvals,3);
+			C->initializeMatrix(Cvals,3,3);
 			cout<<"SOLVING Cx=b"<<endl;
 			cout<<"MATRIX C:"<<endl;
 			C->showMatrix();

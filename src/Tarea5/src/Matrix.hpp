@@ -145,7 +145,7 @@ namespace anpi
      */
     void showMatrix();
 
-    void initializeMatrix(T* refMatrix, int size);
+    void initializeMatrix(T* refMatrix, int rows,int cols);
   }; // class Matrix
 
 
@@ -314,10 +314,10 @@ namespace anpi
   }
 
   template<typename T>
-  void Matrix<T>::initializeMatrix(T* refMatrix, int size){
-	  for(int i=0; i<size;i++){
-		  for(int j=0; j<size; j++){
-			  (*this)(i,j) = refMatrix[i*size+j];
+  void Matrix<T>::initializeMatrix(T* refMatrix, int rows,int cols){
+	  for(int i=0; i<cols;i++){
+		  for(int j=0; j<rows; j++){
+			  (*this)(i,j) = refMatrix[i*rows+j];
 		  }
 	  }
   }
