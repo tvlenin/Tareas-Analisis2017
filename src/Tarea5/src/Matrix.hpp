@@ -307,7 +307,7 @@ namespace anpi
   void Matrix<T>::showMatrix(){
 	  for(unsigned int y=0; y<_rows; y++){
 		  for(unsigned int x=0; x<_cols; x++){
-			  cout<<setw(14)<<(*this)(x,y);
+			  cout<<setw(14)<<(*this)(y,x);
 		  }
 		  cout<<endl;
 	  }

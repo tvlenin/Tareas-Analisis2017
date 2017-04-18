@@ -9,6 +9,7 @@
 #define TESTFRAMEWORK_HPP_
 
 #include <iostream>
+#include <cmath>
 #include <vector>
 #include "Matrix.hpp"
 
@@ -33,31 +34,62 @@ namespace anpi{
 
 		void showVector(std::vector<T> v){
 		   cout<<'\n';
-		   for(int j=0;j<v.size();++j)
+		   for(unsigned int j=0;j<v.size();++j)
 			   cout<<setw(14)<<v[j];
 		   cout<<'\n';
 		}
 
+		void invertLU(Matrix<T>* A, Matrix<T>* Ai);
+
+	};
+
+	struct ErrSingular:std::exception {
+		const char* what() const noexcept {
+			return "**ANPI: Matrix is singular. Operation Canceled. Det=0**\n";
+		}
+	};
+
+	struct ErrNan:std::exception {
+		const char* what() const noexcept {
+			return "**ANPI: Matrix is not valid. And caused Not a Number exception **\n";
+		}
 	};
 
 
 	template<typename T>
 	void TestFramework<T>::lu(const Matrix<T>* A, Matrix<T>* LU){
 		int d = A->cols();
-		for(int k=0; k<d; ++k){
-			for(int i=k; i<d; ++i){
-				T sum = 0.;
-				for(int p=0; p<k; ++p){
-					sum+=((*LU)(i,p))*((*LU)(p,k));
+
+		try{
+			for(int k=0; k<d; ++k){
+				for(int i=k; i<d; ++i){
+					T sum = 0.;
+					for(int p=0; p<k; ++p){
+						sum+=((*LU)(i,p))*((*LU)(p,k));
+					}
+					(*LU)(k,i) = (*A)(i,k)-sum;
 				}
-				(*LU)(k,i) = (*A)(i,k)-sum;
+				for(int j=k+1; j<d; ++j){
+					T sum = 0.;
+					for(int p=0; p<k; ++p)
+						sum+=((*LU)(k,p))*((*LU)(p,j));
+					(*LU)(j,k)=((*A)(k,j)-sum)/(*LU)(k,k);
+				}
 			}
-			for(int j=k+1; j<d; ++j){
-				T sum = 0.;
-				for(int p=0; p<k; ++p)
-					sum+=((*LU)(k,p))*((*LU)(p,j));
-				(*LU)(j,k)=((*A)(k,j)-sum)/(*LU)(k,k);
+
+			//Verify if the Matrix is Singular
+			T det = 1;
+			for(int j = 1; j < d; j++){
+				if((*LU)(j,j)==0)
+					throw ErrSingular();
+				det*=(*LU)(j,j);
 			}
+			if(std::isnan(det))
+				throw ErrNan();
+		}
+		catch(exception& err){
+			cout << err.what() << endl;
+			exit(0);
 		}
 	}
 
@@ -86,6 +118,23 @@ namespace anpi{
 
 		showVector(x);
 		return true;
+	}
+
+	template<typename T>
+	void TestFramework<T>::invertLU(Matrix<T>* A, Matrix<T>* Ai){
+		int N = A->cols();
+
+		std::vector<T> tempCol(N);
+		std::vector<T> tempRow(N);
+
+		for(int j=0; j<N; j++){
+			for(int i = 0; i<N; i++)
+				tempCol[i]=0.;
+
+			tempCol[j]=1.0;
+			solveLU(A,tempRow,tempCol);
+			showVector(tempRow);
+		}
 	}
 }
 
