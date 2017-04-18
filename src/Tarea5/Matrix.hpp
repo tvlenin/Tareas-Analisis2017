@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <cstring>
 #include <vector>
-
+using namespace std;
 namespace anpi
 {
 
@@ -13,8 +13,9 @@ namespace anpi
    */
   template<typename T>
   class Matrix {
-
+  
   private:
+	vector<T> res;
     /// All matrix data
     T* _data;
     /// Number of rows
@@ -135,6 +136,8 @@ namespace anpi
      * Calculates the transposed matrix and returns it
      */
     Matrix<T>& transposed();
+    
+    vector<T>& getColumn(int index); 
 
   }; // class Matrix
 
@@ -291,6 +294,18 @@ namespace anpi
 	  }
 	  return *ans;
   }
+  
+	template<typename T>
+	vector<T>& Matrix<T>::getColumn(int index){
+		res.clear();
+		int size = (*this).cols();
+		for(int i = 0 ; i < size; i++){
+			res.push_back((*this)(i,index));
+		}
+		return res;
+	
+	}
+  
 
 } // namespace ANPI
 

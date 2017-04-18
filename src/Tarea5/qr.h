@@ -14,8 +14,6 @@ namespace anpi{
 
   public:
     qr(){};
-    // get the first column of Matrix A
-    vector<T> getColumn(const Matrix<T> A, int sizec , int sizer){}
     // get the norm of a vector
     T getNorm(const vector<T> vec){
       int sizeV = vec.size();
@@ -25,9 +23,53 @@ namespace anpi{
       }
       return sqrt(ans);
     }
+	//get U vector
+	
+	vector<T> getU(vector<T> aVector){
+		vector<T> Uvector;
+		if (aVector[0] < 0){
+			Uvector = aVector;
+			Uvector[0] = Uvector[0] - getNorm(aVector);
+		}else {
+			Uvector = aVector;
+			Uvector[0] = Uvector[0] + getNorm(aVector);
+		}
+		return Uvector;
+	}
+	
     //get de diferent qmatrix and put this on qMatrix vector
-    void getQMatrix(Matrix<T> IMatrix, vector<T> u){}
-
+    Matrix<T> getQMatrix(vector<T> u,vector<T> a){
+		T beta = 1/(getNorm(a)*(getNorm(a) + abs(a[0])));
+		double vectSize = u.size();
+		Matrix<T> *I = new Matrix<T>(vectSize);
+		Matrix<T> *UU = new Matrix<T>(vectSize);
+		(*UU) = mulTrans(u);
+		
+		Matrix<T> *Q = new Matrix<T>((*I)-(*UU));
+		
+		
+		//(*Q) = (I)- UU;
+		
+		return *Q;
+	}
+	
+	Matrix<T> mulTrans(vector<T> vectU ){
+		int vectSize = vectU.size();
+		
+		Matrix<T> *U = new Matrix<T>(vectSize,vectSize,0.0);
+		for(int i = 0; i<vectSize ; i++){
+			for(int j = 0; j<vectSize ; j++){
+				(*U)(i,j) = vectU[i] * vectU[j]; 				
+			}	
+		}
+		return *U;
+	}
+	
+	Matrix<T> result (Matrix<T> A){
+		return getQMatrix(getU(A.getColumn(0)),A.getColumn(0));
+		
+			
+	}
 
     qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
       int sizec = A.cols();
