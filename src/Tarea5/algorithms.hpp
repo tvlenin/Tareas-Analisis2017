@@ -39,7 +39,7 @@ T algorithms<T>::testLU(Matrix<T>& A, Matrix<T>& L, Matrix<T>& U){
 
 template<typename T>
 T algorithms<T>::testQR(Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
-	Matrix<double>*ans = new Matrix<double>((*A)-((*L)*(*U)));
+	Matrix<double>*ans = new Matrix<double>((*A)-((*Q)*(*R)));
 	T err;
 	T* end = (*ans)(0,0) + (ans->_rows*ans->_cols);
 	for (T* ptr = (*ans)(0,0); ptr!=end ;++ptr) {

@@ -277,11 +277,11 @@ namespace anpi
 
   template<typename T>
   Matrix<T>& Matrix<T>::operator *(Matrix<T>& B){
-	  if(this->rows()!=(&B)->cols()){
+	  if(this->cols() != (&B)->rows()){
 		throw WrongSize();
 	  }else {
 			T tmp;
-			Matrix<T>* ans = new Matrix<T>(this->cols(),(B).rows(),0.0);
+			Matrix<T>* ans = new Matrix<T>(this->rows(),(B).cols(),0.0);
 			for(unsigned int a=0; a<rows();a++){
 				for(unsigned int b=0; b<B.cols(); b++){
 					for(unsigned int c=0; c<rows();c++){
