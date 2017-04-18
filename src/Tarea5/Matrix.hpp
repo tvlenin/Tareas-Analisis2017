@@ -123,12 +123,12 @@ namespace anpi
     /*
      * returns this matrix without the first column and row of the matrix, one dimension less
      */
-    Matrix<T>& subMatrix();
+    Matrix<T>& subMatrix(unsigned const int degree);
 
     /*
 	 * returns this matrix with one more column and one more row, one dimension more
 	 */
-	Matrix<T>& upMatrix();
+	Matrix<T>& upMatrix(unsigned const int degree);
 
     /**
      * Number of rows
@@ -319,26 +319,35 @@ namespace anpi
   }
 
   template<typename T>
-  Matrix<T>& Matrix<T>::subMatrix(){
-	  Matrix<double>*sub = new Matrix<double>(this->rows()-1,this->cols()-1,0.0);
-	  for(unsigned int i=1; i<this->rows(); i++){
-		  for(unsigned int j=1; j<this->cols(); j++){
-			  (*sub)(i-1,j-1)=(*this)(i,j);
+  Matrix<T>& Matrix<T>::subMatrix(unsigned const int degree){
+	  if(this->cols()!=this->rows()){
+		  throw WrongSize();
+	  }else{
+		  Matrix<double>*sub = new Matrix<double>(this->rows()-degree,this->cols()-degree,0.0);
+		  for(unsigned int i=degree; i<this->rows(); i++){
+			  for(unsigned int j=degree; j<this->cols(); j++){
+				  (*sub)(i-degree,j-degree)=(*this)(i,j);
+			  }
 		  }
+		  return *sub;
 	  }
-	  return *sub;
   }
 
   template<typename T>
-    Matrix<T>& Matrix<T>::upMatrix(){
-  	  Matrix<double>*sub = new Matrix<double>(this->rows()+1,this->cols()+1,0.0);
-  	  for(unsigned int i=0; i<this->rows(); i++){
-  		  for(unsigned int j=0; j<this->cols(); j++){
-  			  (*sub)(i+1,j+1)=(*this)(i,j);
-  		  }
-  	  }
-  	  return *sub;
-    }
+    Matrix<T>& Matrix<T>::upMatrix(unsigned const int degree){
+	  if(this->cols()!=this->rows()){
+	  		  throw WrongSize();
+	  }else{
+		  Matrix<double>*sub = new Matrix<double>(this->rows()+degree,this->cols()+degree,0.0);
+		  for(unsigned int i=0; i<this->rows(); i++){
+			  for(unsigned int j=0; j<this->cols(); j++){
+				  (*sub)(i+degree,j+degree)=(*this)(i,j);
+			  }
+		  }
+		  return *sub;
+	  }
+  }
+
 
   template<typename T>
   Matrix<T>& Matrix<T>::transposed(){
