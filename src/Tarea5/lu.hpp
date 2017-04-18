@@ -18,10 +18,10 @@ using namespace anpi;
 namespace anpi{
 
 	template<typename T>
-	class TestFramework {
+	class lu {
 	public:
-		TestFramework(){};
-		~TestFramework(){};
+		lu(){};
+		~lu(){};
 
 		/**
 		 * Performs the LU (Lower Upper) matrix decomposition
@@ -42,7 +42,7 @@ namespace anpi{
 
 
 	template<typename T>
-	void TestFramework<T>::lu(const Matrix<T>* A, Matrix<T>* LU){
+	void lu<T>::lu(const Matrix<T>* A, Matrix<T>* LU){
 		int d = A->cols();
 		for(int k=0; k<d; ++k){
 			for(int i=k; i<d; ++i){
@@ -62,7 +62,7 @@ namespace anpi{
 	}
 
 	template<typename T>
-	bool TestFramework<T>::solveLU(const Matrix<T>* A, vector<T> x, std::vector<T> b){
+	bool lu<T>::solveLU(const Matrix<T>* A, vector<T> x, std::vector<T> b){
 		int d = A->cols();
 		Matrix<double>* LU = new Matrix<double>(d,d,1);	//LU Matrix, initialize with 1.
 

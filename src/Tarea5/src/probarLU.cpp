@@ -1,13 +1,15 @@
 
 #include "Matrix.hpp"
-#include "TestFramework.hpp"
 #include <iostream>
+
+#include "lu.hpp"
 using namespace std;
 using namespace anpi;
 
-int main(){
 
-	TestFramework<double>* test = new TestFramework<double>();
+int main2(){
+
+	lu<double>* test = new lu<double>();
 
     Matrix<double>* A = new Matrix<double>(5,5,1);
 
