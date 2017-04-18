@@ -7,10 +7,10 @@ using namespace anpi;
 
 
 template<typename T>
-class test{
+class algorithms{
 public:
-	test();
-	~test();
+	algorithms();
+	~algorithms();
 	//Given L and U rebuilds A, computes the norm with the diff of A and the rebuild A
 	T testLU(Matrix<T>& A, Matrix<T>& L, Matrix<T>& U);
 	T testQR(Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R);
@@ -22,12 +22,12 @@ private:
 // Implementation
 // --------------
 template<typename T>
-test<T>::test(){
+algorithms<T>::algorithms(){
 	n=2;
 }
 
 template<typename T>
-T test<T>::testLU(Matrix<T>& A, Matrix<T>& L, Matrix<T>& U){
+T algorithms<T>::testLU(Matrix<T>& A, Matrix<T>& L, Matrix<T>& U){
 	Matrix<double>*ans = new Matrix<double>((*A)-((*L)*(*U)));
 	T err;
 	T* end = ans(0,0) + (ans->_rows*ans->_cols);
@@ -38,6 +38,6 @@ T test<T>::testLU(Matrix<T>& A, Matrix<T>& L, Matrix<T>& U){
 }
 
 template<typename T>
-T test<T>::testQR(Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
+T algorithms<T>::testQR(Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
 
 }
