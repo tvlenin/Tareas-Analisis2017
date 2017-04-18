@@ -66,8 +66,14 @@ namespace anpi{
 	void result (){
 		//getQMatrix(getU(A.getColumn(0)),A.getColumn(0));			
 	}
+	struct WrongSize:std::exception {
+    const char* what() const noexcept {return "Different size of matrix, operation cancelled\n";}
+	};
 	//obtain Q and R Matrix
     qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
+		if(A.rows() != A.cols()){
+			throw WrongSize();
+		}
 		(R) = (A);
 		int matrixSize = A.cols();
 		
@@ -103,7 +109,7 @@ namespace anpi{
 				Q = Q * ((*Itemp).transposed()) ;		
 			}
 		}
-					
+							
 	}
 	
   };
