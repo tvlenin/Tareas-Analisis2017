@@ -115,6 +115,11 @@ namespace anpi
      */
     void fill(const T* mem);
 
+    /*
+     * To scale the matrix with an scalar
+     */
+    void scale(const T* scal);
+
     /**
      * Number of rows
      */
@@ -233,12 +238,17 @@ namespace anpi
 	  }
   }
 
+//  T* end = _data + (_rows*_cols);
+//  for (T* ptr = _data;ptr!=end;++ptr) {
+//    *ptr = val;
+//  }
   template<typename T>
     Matrix<T>& Matrix<T>::operator-(Matrix<T>& B){
   	  if(this->_cols!=(&B)->cols() && this->rows()!=(&B)->rows()){
   		  throw WrongSize();
   	  }else {
   		  Matrix<T>*ans = new Matrix<T>(this->_rows, this->_cols, 0.0);
+
   		  for(unsigned int i=0;i<this->rows();i++){
   			  for(unsigned int j=0;j<this->cols();j++){
   				  (*ans)(i,j)=((*this)(i,j))-(B(i,j));
@@ -288,6 +298,14 @@ namespace anpi
   template<typename T>
   void Matrix<T>::fill(const T* mem) {
     std::memcpy(_data,mem,sizeof(T)*_rows*_cols);
+  }
+
+  template<typename T>
+  void Matrix<T>::scale(const T* scal){
+	  T* end = _data + (_rows*_cols);
+	  for (T* ptr = _data;ptr!=end;++ptr) {
+		*ptr = (*ptr)*scal;
+	  }
   }
 
   template<typename T>
