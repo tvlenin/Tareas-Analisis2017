@@ -38,19 +38,21 @@ namespace anpi{
 	}
 	
     //get de diferent qmatrix and put this on qMatrix vector
-    Matrix<T> getQMatrix(vector<T> u,vector<T> a){
+    void getQMatrix(vector<T> u,vector<T> a){
 		T beta = 1/(getNorm(a)*(getNorm(a) + abs(a[0])));
 		double vectSize = u.size();
 		Matrix<T> *I = new Matrix<T>(vectSize);
 		Matrix<T> *UU = new Matrix<T>(vectSize);
 		(*UU) = mulTrans(u);
-		
+		(*UU).scale(beta);
 		Matrix<T> *Q = new Matrix<T>((*I)-(*UU));
+		
+		qMatrix.push_back(*Q);
 		
 		
 		//(*Q) = (I)- UU;
 		
-		return *Q;
+		
 	}
 	
 	Matrix<T> mulTrans(vector<T> vectU ){
@@ -65,18 +67,31 @@ namespace anpi{
 		return *U;
 	}
 	
-	Matrix<T> result (Matrix<T> A){
-		return getQMatrix(getU(A.getColumn(0)),A.getColumn(0));
+	void result (){
+		//getQMatrix(getU(A.getColumn(0)),A.getColumn(0));
 		
 			
 	}
 
     qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
-      int sizec = A.cols();
-      int sizer = A.rows();
-      vector<T> column;
+		(R) = (A);
+		int matrixSize = A.cols();
+		//Matrix<double>*qTemp = new Matrix<double>(matrixSize,matrixSize,0.0);
+		//Matrix<double>*rTemp = new Matrix<double>(matrixSize,matrixSize,0.0);
 
-    }
+		
+		for(int i = 0; i < (matrixSize-1); i++){
+			if(i==0){
+				getQMatrix(getU(R.getColumn(0)),R.getColumn(0));
+				Q = qMatrix[0];
+				R = Q * R;
+			}
+							
+				
+			}
+					
+		}
+	
 
   };
 }// namespace ANPI

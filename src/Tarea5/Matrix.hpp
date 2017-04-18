@@ -4,7 +4,12 @@
 #include <cstddef>
 #include <cstring>
 #include <vector>
+#include <iostream>
+#include <iomanip>
+
 using namespace std;
+
+
 namespace anpi
 {
 
@@ -70,14 +75,14 @@ namespace anpi
     const T* operator[](const size_t row) const {return _data + row*_cols;}
 
     /// Return reference to the element at the r row and c column
-        T& operator()(const size_t row,const size_t col) {
-          return *(_data + (row*_cols + col));
-        }
+	T& operator()(const size_t row,const size_t col) {
+	  return *(_data + (row*_cols + col));
+	}
 
 	/// Return const reference to the element at the r row and c column
-		const T& operator()(const size_t row,const size_t col) const {
-		  return *(_data + (row*_cols + col));
-		}
+	const T& operator()(const size_t row,const size_t col) const {
+	  return *(_data + (row*_cols + col));
+	}
 
     /**
      * Returns the adition of this matrix and another of the same size
@@ -112,6 +117,11 @@ namespace anpi
      */
     void fill(const T* mem);
 
+    /*
+     * To scale the matrix with an scalar
+     */
+    void scale(const T scal);
+
     /**
      * Number of rows
      */
@@ -139,6 +149,12 @@ namespace anpi
     
     vector<T>& getColumn(int index); 
 
+    /**
+     * Prints the matrix content
+     */
+    void showMatrix();
+
+    void initializeMatrix(T* refMatrix, int size);
   }; // class Matrix
 
 
@@ -226,12 +242,17 @@ namespace anpi
 	  }
   }
 
+//  T* end = _data + (_rows*_cols);
+//  for (T* ptr = _data;ptr!=end;++ptr) {
+//    *ptr = val;
+//  }
   template<typename T>
     Matrix<T>& Matrix<T>::operator-(Matrix<T>& B){
   	  if(this->_cols!=(&B)->cols() && this->rows()!=(&B)->rows()){
   		  throw WrongSize();
   	  }else {
   		  Matrix<T>*ans = new Matrix<T>(this->_rows, this->_cols, 0.0);
+
   		  for(unsigned int i=0;i<this->rows();i++){
   			  for(unsigned int j=0;j<this->cols();j++){
   				  (*ans)(i,j)=((*this)(i,j))-(B(i,j));
@@ -284,12 +305,21 @@ namespace anpi
   }
 
   template<typename T>
+  void Matrix<T>::scale(const T scal){
+	  T* end = _data + (_rows*_cols);
+	  for (T* ptr = _data;ptr!=end;++ptr) {
+		*ptr = (*ptr)*scal;
+	  }
+  }
+
+  template<typename T>
   Matrix<T>& Matrix<T>::transposed(){
 	  Matrix<T>* ans = new Matrix<T>((*this));
 	  for(unsigned int y=0; y<_rows; y++){
 		  for(unsigned int x=y+1; x<_cols; x++){
 			  (*ans)(x,y)=(*this)(y,x);
 			  (*ans)(y,x)=(*this)(x,y);
+
 		  }
 	  }
 	  return *ans;
@@ -307,6 +337,24 @@ namespace anpi
 	}
   
 
+  template<typename T>
+  void Matrix<T>::showMatrix(){
+	  for(unsigned int y=0; y<_rows; y++){
+		  for(unsigned int x=0; x<_cols; x++){
+			  cout<<setw(14)<<(*this)(x,y);
+		  }
+		  cout<<endl;
+	  }
+  }
+
+  template<typename T>
+  void Matrix<T>::initializeMatrix(T* refMatrix, int size){
+	  for(int i=0; i<size;i++){
+		  for(int j=0; j<size; j++){
+			  (*this)(i,j) = refMatrix[i*size+j];
+		  }
+	  }
+  }
 } // namespace ANPI
 
 
