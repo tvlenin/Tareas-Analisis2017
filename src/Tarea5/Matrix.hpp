@@ -122,6 +122,17 @@ namespace anpi
      */
     void scale(const T scal);
 
+    /*
+     * returns this matrix without the first column and row of the matrix, one dimension less
+     */
+    Matrix<T>& subMatrix();
+
+    /*
+	 * returns this matrix with one more column and one more row, one dimension more
+	 */
+	Matrix<T>& upMatrix();
+
+
     /**
      * Number of rows
      */
@@ -313,13 +324,34 @@ namespace anpi
   }
 
   template<typename T>
+  Matrix<T>& Matrix<T>::subMatrix(){
+	  Matrix<double>*sub = new Matrix<double>(this->rows()-1,this->cols()-1,0.0);
+	  for(unsigned int i=1; i<this->rows(); i++){
+		  for(unsigned int j=1; j<this->cols(); j++){
+			  (*sub)(i-1,j-1)=(*this)(i,j);
+		  }
+	  }
+	  return *sub;
+  }
+
+  template<typename T>
+    Matrix<T>& Matrix<T>::upMatrix(){
+  	  Matrix<double>*sub = new Matrix<double>(this->rows()+1,this->cols()+1,0.0);
+  	  for(unsigned int i=0; i<this->rows(); i++){
+  		  for(unsigned int j=0; j<this->cols(); j++){
+  			  (*sub)(i+1,j+1)=(*this)(i,j);
+  		  }
+  	  }
+  	  return *sub;
+    }
+
+  template<typename T>
   Matrix<T>& Matrix<T>::transposed(){
 	  Matrix<T>* ans = new Matrix<T>((*this));
 	  for(unsigned int y=0; y<_rows; y++){
 		  for(unsigned int x=y+1; x<_cols; x++){
 			  (*ans)(x,y)=(*this)(y,x);
 			  (*ans)(y,x)=(*this)(x,y);
-
 		  }
 	  }
 	  return *ans;
