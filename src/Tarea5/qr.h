@@ -71,7 +71,9 @@ namespace anpi{
 	};
 	//obtain Q and R Matrix
     qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
+		
 		if(A.rows() != A.cols()){
+			
 			throw WrongSize();
 		}
 		(R) = (A);
@@ -99,14 +101,22 @@ namespace anpi{
 							
 				
 		}
-		for (int i = 0; i < matrixSize; i++ ){
+		//cout<<"Entra al for"<<endl;
+		for (int i = 0; i < matrixSize-1; i++ ){
 			if (i == 0){
 				Q = qMatrix[0].transposed();
+				//cout<<"Pasa la primera"<<endl;
 			}
 			else{			
+				//cout<<"Entra al else"<<endl;
 				Matrix<double>*Itemp = new Matrix<double>(matrixSize);
+				//cout<<"crea la identidad"<<endl;
+				//cout<<qMatrix[i].cols()<<endl;
 				(*Itemp).substitude(qMatrix[i]);
-				Q = Q * ((*Itemp).transposed()) ;		
+				//cout<<"sustituye"<<endl;
+				
+				Q = Q * ((*Itemp).transposed()) ;	
+				//cout<<"multiplica Q"<<endl;	
 			}
 		}
 							
